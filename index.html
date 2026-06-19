@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>AI效率商店 — Prompt模板 · Excel工具 · Notion系统</title>
+<style>
+  :root {
+    --bg: #0f172a; --card: #1e293b; --text: #e2e8f0;
+    --muted: #94a3b8; --accent: #6366f1; --green: #10b981; --red: #ef4444;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; line-height:1.6; padding:1rem; max-width:720px; margin:0 auto; padding-bottom:3rem; }
+  header { text-align:center; padding:2rem 0 1rem; }
+  h1 { font-size:1.5rem; margin-bottom:.25rem; }
+  .sub { color:var(--muted); font-size:.9rem; }
+
+  .product { background:var(--card); border-radius:12px; padding:1.25rem; margin-bottom:1rem; border-left:3px solid var(--accent); transition: transform .15s; }
+  .product:active { transform:scale(.99); }
+  .product h2 { font-size:1.1rem; margin-bottom:.25rem; }
+  .price { color:var(--accent); font-weight:bold; font-size:1.2rem; margin:.5rem 0; }
+  .desc { color:var(--muted); font-size:.85rem; margin-bottom:.75rem; }
+  .product ul { list-style:none; font-size:.85rem; }
+  .product li::before { content:"✅ "; }
+  .product li { margin-bottom:.25rem; }
+
+  .buy-btn { display:inline-block; background:var(--accent); color:#fff; padding:.6rem 1.5rem; border-radius:8px; font-weight:bold; margin-top:.75rem; cursor:pointer; border:none; font-size:.9rem; width:100%; text-align:center; }
+  .buy-btn:active { opacity:.8; }
+
+  /* Modal */
+  .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:100; overflow-y:auto; padding:1rem; }
+  .modal.active { display:flex; align-items:flex-start; justify-content:center; padding-top:3vh; }
+  .modal-inner { background:var(--card); padding:1.5rem; border-radius:12px; text-align:center; max-width:380px; width:100%; margin-bottom:2rem; }
+  .modal-inner h3 { font-size:1rem; margin-bottom:.3rem; }
+  .modal-inner .price-big { font-size:2rem; color:var(--accent); font-weight:bold; margin:.5rem 0; }
+  .modal-inner .price-big .original { font-size:.8rem; color:var(--muted); text-decoration:line-through; margin-right:.5rem; }
+
+  .qr-tabs { display:flex; gap:.5rem; margin:1rem 0; }
+  .qr-tab { flex:1; padding:.5rem; border-radius:8px; border:2px solid transparent; cursor:pointer; background:rgba(255,255,255,.05); color:var(--muted); font-size:.85rem; text-align:center; user-select:none; }
+  .qr-tab.active { border-color:var(--accent); color:var(--text); background:rgba(99,102,241,.15); }
+  .qr-tab.wx.active { border-color:#07c160; background:rgba(7,193,96,.15); }
+  .qr-tab.ali.active { border-color:#1677ff; background:rgba(22,119,255,.15); }
+
+  .qr-img-wrap { width:220px; height:220px; margin:0 auto; border-radius:12px; overflow:hidden; border:2px dashed #334155; display:flex; align-items:center; justify-content:center; }
+  .qr-img-wrap img { width:100%; height:100%; object-fit:contain; }
+  .qr-placeholder { color:var(--muted); font-size:.8rem; text-align:center; padding:1rem; line-height:1.8; }
+  .qr-placeholder .icon { font-size:2.5rem; display:block; margin-bottom:.5rem; }
+
+  .payment-steps { text-align:left; font-size:.78rem; color:var(--muted); background:rgba(255,255,255,.03); border-radius:8px; padding:.75rem 1rem; margin:1rem 0; line-height:2; }
+  .payment-steps strong { color:var(--text); }
+
+  .copy-row { display:flex; gap:.5rem; margin:1rem 0; }
+  .copy-row input { flex:1; background:rgba(255,255,255,.05); border:1px solid #334155; color:var(--text); padding:.5rem; border-radius:6px; font-size:.8rem; text-align:center; }
+  .copy-row button { background:var(--green); color:#fff; border:none; padding:.5rem 1rem; border-radius:6px; font-size:.8rem; cursor:pointer; white-space:nowrap; }
+  .copy-row button:active { opacity:.8; }
+
+  .close-btn { background:transparent; color:var(--muted); border:1px solid #334155; padding:.5rem 2rem; border-radius:8px; margin-top:.75rem; cursor:pointer; font-size:.85rem; width:100%; }
+  .close-btn:active { background:rgba(255,255,255,.05); }
+
+  footer { text-align:center; padding:2rem 0 1rem; color:var(--muted); font-size:.75rem; }
+  footer p { margin-bottom:.25rem; }
+  .contact { background:var(--card); border-radius:12px; padding:1rem; margin:1rem 0; text-align:center; font-size:.85rem; }
+  .contact strong { color:var(--accent); }
+  .badge { background:var(--green); color:#fff; font-size:.7rem; padding:.15rem .5rem; border-radius:20px; margin-left:.5rem; vertical-align:middle; }
+  .badge-hot { background:var(--red); }
+  @media (prefers-reduced-motion:reduce) { .product,.buy-btn,.modal-inner,.qr-tab { transition:none; } }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🧠 AI效率商店</h1>
+  <p class="sub">Prompt模板 · Excel工具 · Notion系统 — 一次购买，永久使用</p>
+</header>
+
+<!-- 商品列表 -->
+<div class="product">
+  <h2>📱 自媒体爆款 Prompt 套装 <span class="badge badge-hot">最热</span></h2>
+  <div class="price">¥19.9</div>
+  <div class="desc">10条实战Prompt，覆盖6大平台。从选题到变现全搞定。</div>
+  <ul>
+    <li>爆款标题生成器 / 小红书种草 / 短视频脚本</li>
+    <li>公众号大纲 / 知乎回答 / 朋友圈文案</li>
+    <li>内容日历 / 评论回复 / 竞品分析 / 长文优化</li>
+  </ul>
+  <button class="buy-btn" onclick="openPay('自媒体Prompt套装', 19.9)">¥19.9 立即购买</button>
+</div>
+
+<div class="product">
+  <h2>💼 职场办公 Prompt 套装</h2>
+  <div class="price">¥19.9</div>
+  <div class="desc">10条职场写作Prompt，周报/邮件/PPT/述职/OKR/复盘全覆盖。</div>
+  <ul>
+    <li>周报月报 / 会议纪要 / 工作邮件 / 简历优化</li>
+    <li>PPT大纲 / 年终述职 / 产品竞品分析</li>
+    <li>OKR制定 / 数据分析洞察 / AAR工作复盘</li>
+  </ul>
+  <button class="buy-btn" onclick="openPay('职场Prompt套装', 19.9)">¥19.9 立即购买</button>
+</div>
+
+<div class="product">
+  <h2>📕 小红书运营 Prompt 套装</h2>
+  <div class="price">¥9.9</div>
+  <div class="desc">5条小红书独有Prompt，与商品1零重叠。</div>
+  <ul>
+    <li>封面文案生成器 / 评论区引流运营</li>
+    <li>个人简介优化 / 节日热点内容日历</li>
+    <li>图片配文生成器</li>
+  </ul>
+  <button class="buy-btn" onclick="openPay('小红书Prompt套装', 9.9)">¥9.9 立即购买</button>
+</div>
+
+<div class="product">
+  <h2>📊 Excel 个人财务模板 <span class="badge">新</span></h2>
+  <div class="price">¥9.9</div>
+  <div class="desc">3个自动公式Excel模板。填入数据，图表自动生成。</div>
+  <ul>
+    <li>月度收支记账本（自动汇总 · 饼图 · 超支提醒）</li>
+    <li>52周存钱挑战表（进度条 · 打卡变色 · 完成奖励）</li>
+    <li>副业收入追踪表（多平台 · 数据透视 · 趋势图）</li>
+  </ul>
+  <button class="buy-btn" onclick="openPay('Excel财务模板', 9.9)">¥9.9 立即购买</button>
+</div>
+
+<div class="product">
+  <h2>🗂️ Notion 个人效率系统</h2>
+  <div class="price">¥24.9</div>
+  <div class="desc">6合1 Notion模板：年计划 · 周任务 · 阅读 · 项目 · 习惯 · 灵感。</div>
+  <ul>
+    <li>年度目标仪表盘（进度条+自动变色）</li>
+    <li>周计划+每日任务 / 阅读书架+读书笔记</li>
+    <li>项目追踪（甘特图+看板）/ 习惯打卡器 / 灵感捕捉</li>
+  </ul>
+  <button class="buy-btn" onclick="openPay('Notion效率系统', 24.9)">¥24.9 立即购买</button>
+</div>
+
+<!-- 全家桶 -->
+<div class="product" style="border-left-color:var(--green);">
+  <h2>🎁 全部5件 · 效率全家桶 <span class="badge">省¥39.6</span></h2>
+  <div class="price"><span style="text-decoration:line-through;color:var(--muted);font-size:.9rem;">¥84.5</span> ¥44.9</div>
+  <div class="desc">一次买齐全部5件商品，5折拿下。</div>
+  <button class="buy-btn" style="background:var(--green);" onclick="openPay('效率全家桶(全部5件)', 44.9, 84.5)">¥44.9 全部拿下</button>
+</div>
+
+<!-- 联系方式 -->
+<div class="contact">
+  <p>📮 支付后请<strong>截图支付成功页面</strong>，微信发送给我</p>
+  <p style="color:var(--muted);font-size:.75rem;margin-top:.25rem;">24小时内通过微信发送商品文件 · 有问题微信联系</p>
+</div>
+
+<footer>
+  <p>一次购买，永久使用 · 后续更新免费</p>
+  <p>© 2026 AI效率商店</p>
+</footer>
+
+<!-- 支付弹窗 -->
+<div class="modal" id="payModal">
+  <div class="modal-inner">
+    <h3 id="modalTitle">购买：自媒体Prompt套装</h3>
+    <div class="price-big">
+      <span class="original" id="modalOrig" style="display:none">¥84.5</span>
+      <span id="modalPrice">¥19.9</span>
+    </div>
+
+    <!-- 支付方式切换 -->
+    <div class="qr-tabs">
+      <div class="qr-tab wx active" onclick="switchQR('wx')">💚 微信支付</div>
+      <div class="qr-tab ali" onclick="switchQR('ali')">💙 支付宝</div>
+    </div>
+
+    <!-- 微信收款码（默认） -->
+    <div class="qr-img-wrap" id="qrWx">
+      <img src="qr-wx.png" alt="微信收款码"
+           onerror="this.style.display='none';this.parentElement.querySelector('.qr-placeholder').style.display='block';">
+      <div class="qr-placeholder" style="display:none">
+        <span class="icon">💚</span>
+        微信收款码加载失败<br>
+        <small>请将 qr-wx.png 放在同目录</small>
+      </div>
+    </div>
+
+    <!-- 支付宝收款码 -->
+    <div class="qr-img-wrap" id="qrAli" style="display:none">
+      <img src="qr-ali.png" alt="支付宝收款码"
+           onerror="this.style.display='none';this.parentElement.querySelector('.qr-placeholder').style.display='block';">
+      <div class="qr-placeholder" style="display:none">
+        <span class="icon">💙</span>
+        支付宝收款码加载失败<br>
+        <small>请将 qr-ali.png 放在同目录</small>
+      </div>
+    </div>
+
+    <!-- 支付步骤 -->
+    <div class="payment-steps">
+      <strong>📋 购买流程：</strong><br>
+      1️⃣ 扫描上方二维码支付 <strong id="modalNote">自媒体Prompt套装</strong><br>
+      2️⃣ <strong>截图支付成功页面</strong><br>
+      3️⃣ 微信发送截图给我，24小时内发送商品文件
+    </div>
+
+    <button class="close-btn" onclick="closePay()">关闭</button>
+  </div>
+</div>
+
+<script>
+let currentProduct = '', currentPrice = 0;
+
+function openPay(name, price, origPrice) {
+  currentProduct = name;
+  currentPrice = price;
+  document.getElementById('modalTitle').textContent = '购买：' + name;
+  document.getElementById('modalPrice').textContent = '¥' + price.toFixed(1);
+  document.getElementById('modalNote').textContent = name;
+  if (origPrice) {
+    document.getElementById('modalOrig').style.display = 'inline';
+    document.getElementById('modalOrig').textContent = '¥' + origPrice.toFixed(1);
+  } else {
+    document.getElementById('modalOrig').style.display = 'none';
+  }
+  // Reset to WeChat tab
+  switchQR('wx');
+  document.getElementById('payModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePay() {
+  document.getElementById('payModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function switchQR(type) {
+  document.getElementById('qrWx').style.display = type === 'wx' ? 'flex' : 'none';
+  document.getElementById('qrAli').style.display = type === 'ali' ? 'flex' : 'none';
+  document.querySelectorAll('.qr-tab').forEach(t => t.classList.remove('active'));
+  if (type === 'wx') document.querySelector('.qr-tab.wx').classList.add('active');
+  if (type === 'ali') document.querySelector('.qr-tab.ali').classList.add('active');
+}
+
+// Close on backdrop click
+document.getElementById('payModal').addEventListener('click', function(e) {
+  if (e.target === this) closePay();
+});
+
+// PWA-ish: prevent zoom on double tap
+document.addEventListener('dblclick', function(e) {
+  if (e.target.tagName === 'BUTTON') e.preventDefault();
+}, {passive: false});
+</script>
+</body>
+</html>
